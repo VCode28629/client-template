@@ -6,9 +6,6 @@ pnpm
 tauri-cli@2.0.0-beta.20
 ```
 
-
-* build
-
 * settings
 ```
 ./xmake.lua
@@ -18,12 +15,13 @@ tauri-cli@2.0.0-beta.20
 ```
 
 
-* 分步编译
+* 切换编译模式：
+```
+xmake f -m debug
+xmake f -m release
+```
 
-cd view
-pnpm build
-cd ..
-cd tauri-bridge
-cargo tauri build
-cd ..
-
+* 编译：
+```
+xmake
+```
