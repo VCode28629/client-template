@@ -3,26 +3,49 @@
 #include "base/base.h"
 #include <functional>
 #include <variant>
+#include <cstdint>
 
 namespace Project {
 
 namespace Bridge {
 
-using ParamType = std::variant<int, double, String, bool>;
-using ReturnType = std::function<String(const Vector<ParamType> &)>;
+using ParamType =
+    std::variant<int32_t, uint32_t, int64_t, uint64_t, double, String, bool>;
+using CallbackFunction = std::function<String(const Vector<ParamType> &)>;
+enum class ParamTypeName : uint8_t
+{
+    Int32,
+    Uint32,
+    Int64,
+    Uint64,
+    Double,
+    String,
+    Bool,
+    JsonObject
+};
+
+struct BridgeFunction
+{
+    CallbackFunction func;
+    Vector<ParamTypeName> argTypes;
+};
 
 class CPP_Bridge
 {
 private:
     void registerFunctions();
-    ReturnType hello();
+    Vector<ParamType> parseParams(const Vector<ParamTypeName> &argTypes,
+                                  const String &json_list);
+
+    // Callback functions
+    CallbackFunction hello();
 
 public:
     CPP_Bridge();
     String invoke(String func, String args);
 
 private:
-    HashMap<StringView, ReturnType> m_funcs;
+    HashMap<StringView, BridgeFunction> m_funcs;
 };
 
 } // namespace Bridge

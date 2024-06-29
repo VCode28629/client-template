@@ -1,6 +1,6 @@
 #include "bridge/bridge.h"
-#include <cstdio>
 #include <cstdlib>
+
 const char *invoke(const char *func, const char *args)
 {
     static Project::Bridge::CPP_Bridge bridge;
@@ -19,16 +19,30 @@ namespace Project {
 
 namespace Bridge {
 
-void CPP_Bridge::registerFunctions() { m_funcs[FUNC_NAME(hello)] = hello(); }
+void CPP_Bridge::registerFunctions()
+{
+#define REGISTER_FUNCTION(FUNC, ...) \
+    m_funcs[FUNC_NAME(FUNC)] = BridgeFunction{FUNC(), {__VA_ARGS__}}
+
+    REGISTER_FUNCTION(hello, ParamTypeName::String);
+
+#undef REGISTER_FUNCTION
+}
+
+Vector<ParamType> CPP_Bridge::parseParams(const Vector<ParamTypeName> &argTypes,
+                                          const String &json_list)
+{
+    return Vector<ParamType>();
+}
 
 CPP_Bridge::CPP_Bridge() { registerFunctions(); }
 
 String CPP_Bridge::invoke(String func, String args)
 {
-    return m_funcs[func](Vector<ParamType>{ParamType(args)}); // TODO: json
+    //return m_funcs[func].func(Vector<ParamType>{ParamType(args)}); // TODO: json
 }
 
-ReturnType CPP_Bridge::hello()
+CallbackFunction CPP_Bridge::hello()
 {
     // args: name
     return [](const Vector<ParamType> &args) {
