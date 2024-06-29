@@ -22,7 +22,7 @@ namespace Bridge {
 void CPP_Bridge::registerFunctions()
 {
 #define REGISTER_FUNCTION(FUNC, ...) \
-    m_funcs[FUNC_NAME(FUNC)] = BridgeFunction{FUNC(), {__VA_ARGS__}}
+    m_funcs.try_emplace(FUNC_NAME(FUNC), BridgeFunction{FUNC(), {__VA_ARGS__}})
 
     REGISTER_FUNCTION(hello, ParamTypeName::String);
 
@@ -32,14 +32,47 @@ void CPP_Bridge::registerFunctions()
 Vector<ParamType> CPP_Bridge::parseParams(const Vector<ParamTypeName> &argTypes,
                                           const String &json_list)
 {
-    return Vector<ParamType>();
+    json list = json::parse(json_list);
+    Vector<ParamType> ret;
+    for (int i = 0; i < argTypes.size(); ++i)
+    {
+        switch (argTypes[i])
+        {
+            case ParamTypeName::Int32:
+                ret.emplace_back(static_cast<int32_t>(list[i]));
+                break;
+            case ParamTypeName::Uint32:
+                ret.emplace_back(static_cast<uint64_t>(list[i]));
+                break;
+            case ParamTypeName::Int64:
+                ret.emplace_back(static_cast<int64_t>(list[i]));
+                break;
+            case ParamTypeName::Uint64:
+                ret.emplace_back(static_cast<uint64_t>(list[i]));
+                break;
+            case ParamTypeName::Double:
+                ret.emplace_back(static_cast<double>(list[i]));
+                break;
+            case ParamTypeName::String:
+                ret.emplace_back(String(list[i]));
+                break;
+            case ParamTypeName::Bool:
+                ret.emplace_back(static_cast<bool>(list[i]));
+                break;
+            case ParamTypeName::JsonObject:
+                ret.emplace_back(String(list[i].dump()));
+                break;
+        }
+    }
+    return std::move(ret);
 }
 
 CPP_Bridge::CPP_Bridge() { registerFunctions(); }
 
 String CPP_Bridge::invoke(String func, String args)
 {
-    //return m_funcs[func].func(Vector<ParamType>{ParamType(args)}); // TODO: json
+    Vector<ParamType> &&arg_list = parseParams(m_funcs[func].argTypes, args);
+    return m_funcs[func].func(arg_list);
 }
 
 CallbackFunction CPP_Bridge::hello()

@@ -2,10 +2,12 @@ set_languages("c++23")
 set_toolchains("clang")
 add_rules("mode.debug", "mode.release")
 
+add_requires("nlohmann_json")
 
 target("bridge")
     set_kind("shared")
     add_files("bridge/src/*.cpp")
+    add_packages("nlohmann_json")
     add_includedirs("bridge/include/")
     add_includedirs("base/include/")
 
