@@ -1,7 +1,6 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
-import { listen } from "@tauri-apps/api/event";
 import "./App.css";
 
 function App() {
@@ -11,13 +10,8 @@ function App() {
   async function greet() {
     // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
     let res: string = await invoke("invoke", { func: "hello", args: JSON.stringify([name]) });
-    console.log(res);
     setGreetMsg(res);
   }
-
-  listen('ping', (event) => {
-    console.log(event.event, event.payload);
-  });
 
   return (
     <div className="container">
@@ -36,7 +30,7 @@ function App() {
       </div>
 
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-      <p>Press F12 in Debug Mode and see EVENT test</p>
+      <p>Press F12 in Debug Mode to see EVENT test</p>
       <p>There should be 'ping pong' in every 5 seconds.</p>
 
       <form
