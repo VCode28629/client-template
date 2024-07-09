@@ -4,12 +4,19 @@ add_rules("mode.debug", "mode.release")
 
 add_requires("nlohmann_json")
 
+target("base")
+    set_kind("shared")
+    add_files("base/src/*.cpp")
+    add_includedirs("base/include/")
+    add_packages("nlohmann_json")
+
 target("bridge")
     set_kind("shared")
     add_files("bridge/src/*.cpp")
-    add_packages("nlohmann_json")
     add_includedirs("bridge/include/")
+    add_deps("base")
     add_includedirs("base/include/")
+    add_packages("nlohmann_json")
 
 
 target("view")

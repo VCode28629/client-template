@@ -57,3 +57,7 @@ C_API const char *invoke(const char *func, const char *args);
 C_API void initialize();
 
 C_API void free_str(const char *s);
+
+C_API void emit_init(void (*emit_func)(const char *, const char *,
+                                       const char *),
+                     void (*emit_all_func)(const char *, const char *));

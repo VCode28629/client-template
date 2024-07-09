@@ -15,6 +15,12 @@ void free_str(const char *s) { delete[] s; }
 
 void initialize() { return; }
 
+void emit_init(void (*emit_func)(const char *, const char *, const char *),
+               void (*emit_all_func)(const char *, const char *))
+{
+    set_func_address(emit_func, emit_all_func);
+}
+
 namespace Project {
 
 namespace Bridge {
