@@ -1,6 +1,7 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
+import { listen } from "@tauri-apps/api/event";
 import "./App.css";
 
 function App() {
@@ -13,6 +14,10 @@ function App() {
     console.log(res);
     setGreetMsg(res);
   }
+
+  listen('ping', (event) => {
+    console.log(event.event, event.payload);
+  });
 
   return (
     <div className="container">
@@ -31,6 +36,8 @@ function App() {
       </div>
 
       <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <p>Press F12 in Debug Mode and see EVENT test</p>
+      <p>There should be 'ping pong' in every 5 seconds.</p>
 
       <form
         className="row"

@@ -13,7 +13,20 @@ const char *invoke(const char *func, const char *args)
 
 void free_str(const char *s) { delete[] s; }
 
-void initialize() { return; }
+void initialize()
+{
+    using namespace Project;
+    // test emit
+    stl::thread t([]() {
+        while (true)
+        {
+            emit_all("ping", "pong");
+            stl::this_thread::sleep_for(std::chrono::seconds(5));
+        }
+    });
+    t.detach();
+    return;
+}
 
 void emit_init(void (*emit_func)(const char *, const char *, const char *),
                void (*emit_all_func)(const char *, const char *))
