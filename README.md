@@ -2,12 +2,13 @@
 * Requirements
 ```
 xmake
-cargo
+cargo(install by rustup is recommended)
+tauri-cli(version "^2.0.0-beta")
 clang
 pnpm
+unzip or 7zip(need by xmake)
+nodejs(need by pnpm, >=14 or tsc will be error)
 ```
-
-Based on tauri-cli@2.0.0-beta.20
 
 If you wanna use gcc or other C/C++ compiler instead of clang, check the `xmake.lua`
 

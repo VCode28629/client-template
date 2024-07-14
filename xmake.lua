@@ -1,6 +1,8 @@
-set_languages("c++23")
+set_languages("c++17")
 set_toolchains("clang")
 add_rules("mode.debug", "mode.release")
+add_cxflags("-fdeclspec")
+add_cxxflags("-fdeclspec")
 
 add_requires("nlohmann_json")
 
@@ -38,13 +40,22 @@ target("view")
     end)
     after_build(function (target) 
         local oldir = os.cd("./tauri-bridge")
-        if is_mode("debug") then
-            os.mv("./target/debug/view.exe", "$(buildir)/windows/x64/debug/")
-            os.mv("./target/debug/view.pdb", "$(buildir)/windows/x64/debug/")
-        end
-        if is_mode("release") then
-            os.mv("./target/release/view.exe", "$(buildir)/windows/x64/release/")
-            os.mv("./target/release/view.pdb", "$(buildir)/windows/x64/release/")
+        if is_plat("windows") then
+            if is_mode("debug") then
+                os.mv("./target/debug/view.exe", "$(buildir)/windows/x64/debug/")
+                os.mv("./target/debug/view.pdb", "$(buildir)/windows/x64/debug/")
+            elseif is_mode("release") then
+                os.mv("./target/release/view.exe", "$(buildir)/windows/x64/release/")
+                os.mv("./target/release/view.pdb", "$(buildir)/windows/x64/release/")
+            end
+        elseif is_plat("linux") then 
+            if is_mode("debug") then
+                os.mv("./target/debug/view.exe", "$(buildir)/windows/x64/debug/")
+                os.mv("./target/debug/view.pdb", "$(buildir)/windows/x64/debug/")
+            elseif is_mode("release") then
+                os.mv("./target/release/view.exe", "$(buildir)/windows/x64/release/")
+                os.mv("./target/release/view.pdb", "$(buildir)/windows/x64/release/")
+            end
         end
         os.cd(oldir)
     end)
