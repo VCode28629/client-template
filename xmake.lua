@@ -19,7 +19,7 @@ target("bridge")
     add_deps("base")
     add_includedirs("base/include/")
     add_packages("nlohmann_json")
-
+    add_rpathdirs("$ORIGIN")
 
 target("view")
     set_kind("binary")
@@ -40,22 +40,13 @@ target("view")
     end)
     after_build(function (target) 
         local oldir = os.cd("./tauri-bridge")
+        local build_dir = "$(buildir)/" .. (is_plat("windows") and "windows/x64/" or "linux/x86_64/")
+        local mode = is_mode("debug") and "debug/" or "release/"
         if is_plat("windows") then
-            if is_mode("debug") then
-                os.mv("./target/debug/view.exe", "$(buildir)/windows/x64/debug/")
-                os.mv("./target/debug/view.pdb", "$(buildir)/windows/x64/debug/")
-            elseif is_mode("release") then
-                os.mv("./target/release/view.exe", "$(buildir)/windows/x64/release/")
-                os.mv("./target/release/view.pdb", "$(buildir)/windows/x64/release/")
-            end
-        elseif is_plat("linux") then 
-            if is_mode("debug") then
-                os.mv("./target/debug/view.exe", "$(buildir)/windows/x64/debug/")
-                os.mv("./target/debug/view.pdb", "$(buildir)/windows/x64/debug/")
-            elseif is_mode("release") then
-                os.mv("./target/release/view.exe", "$(buildir)/windows/x64/release/")
-                os.mv("./target/release/view.pdb", "$(buildir)/windows/x64/release/")
-            end
+            os.mv("./target/" .. mode .. "view.exe", build_dir .. mode)
+            os.mv("./target/" .. mode .. "view.pdb", build_dir .. mode)
+        elseif is_plat("linux") then
+            os.mv("./target/" .. mode .. "view", build_dir .. mode)
         end
         os.cd(oldir)
     end)
